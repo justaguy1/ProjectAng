@@ -28,7 +28,7 @@ public class Player_controller : MonoBehaviour {
     float gravityMultiplier=3;
 
     Animator anim_control;
-    public bool isInAir = false;
+    public bool IsGrounded = false;
     CapsuleCollider col;
 
     // this is use to toggle between up and down movement based on where the player is facing
@@ -45,6 +45,9 @@ public class Player_controller : MonoBehaviour {
     public static bool PlayerCanMove = true;
 
 
+    bool canDoubleJump;
+    bool canJump;
+    public  bool DoubleJumpAbilityUnlocked;
 
    
     void Start ()
@@ -62,7 +65,8 @@ public class Player_controller : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-       
+        JumpCheck();
+        //Debug.Log("IsGrounded : " + IsGrounded);
         GetInput();
         SetAnimations();
 
@@ -75,6 +79,17 @@ public class Player_controller : MonoBehaviour {
 
         //   Debug.Log("ladder :" + GlobalVariables.stairLayerCollision);
         // Debug.Log("is in air :" + isInAir);
+    }
+
+    private void JumpCheck()
+    {
+        IsGrounded = Physics.Raycast(transform.position, -Vector3.up, 1.4f, groundlayer);
+        Debug.DrawRay(transform.position,-Vector3.up*1.4f,Color.green,1);
+        if (DoubleJumpAbilityUnlocked && IsGrounded)
+        {
+            canDoubleJump = true;
+        }
+       
     }
 
     void GetInput()
@@ -95,7 +110,7 @@ public class Player_controller : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        isInAir = !Physics.Raycast(transform.position, -Vector3.up, 1.4f, groundlayer);
+       
         //isInAir = !Physics.CheckCapsule(col.bounds.center, new Vector3(col.bounds.center.x, col.bounds.min.y, col.bounds.center.z), col.radius * 0.5f, groundlayer);
         
         if (GlobalVariables.playerCanRotate)
@@ -144,7 +159,7 @@ public class Player_controller : MonoBehaviour {
     {
 
        
-            if (isInAir && !collision.gameObject.CompareTag("Ladder"))
+            if (IsGrounded && !collision.gameObject.CompareTag("Ladder"))
             {
                 changeCharacterMovementState();
                // Debug.Log("is in air");
@@ -207,21 +222,21 @@ public class Player_controller : MonoBehaviour {
         //1.1f below is used to check if ray is colliding with the ground layer
 
 
-        if (!isInAir)
-        {
-            jumpCount = 0;
+      
 
-           
-            
-
-        }
-
-        if (jumpCount<maxJumpCount)
+        if (IsGrounded)
         {
             //  rb.AddForce(Vector3.up * jumpPower * Time.deltaTime, ForceMode.Impulse);
             rb.velocity = Vector3.up * jumpPower * Time.deltaTime;
-            ++jumpCount;
-            isInAir = true;
+            // ++jumpCount;
+            //IsGrounded = false;
+        }
+        else if (!IsGrounded && canDoubleJump)
+        {
+            rb.velocity = Vector3.up * jumpPower * Time.deltaTime;
+            canDoubleJump = false;
+            Debug.Log("double jump called");
+
         }
     }
 
@@ -231,13 +246,13 @@ public class Player_controller : MonoBehaviour {
         if (GlobalVariables.HorizontalMovement)
         {
             PlayerHorizontalMovement();
-            Debug.Log("horizontal called");
+           // Debug.Log("horizontal called");
            
         }
         else
         {
             PlayerVerticalMovement();
-            Debug.Log("vertical called");
+           // Debug.Log("vertical called");
         }
 
         
@@ -292,7 +307,7 @@ public class Player_controller : MonoBehaviour {
         if (anim_control == null) return;
         
         anim_control.SetFloat("MoveX", Mathf.Abs(horizontal_movement));
-        anim_control.SetBool("IsInAir", isInAir);
+        anim_control.SetBool("IsInAir", IsGrounded);
     }
 
     void changeCharacterMovementState()

@@ -85,7 +85,7 @@ public class MoveableObjectSystem : MonoBehaviour {
             {
             if (p_c)
             {
-                if (!p_c.isInAir)
+                if (!p_c.IsGrounded)
                 {
                     DrawRaycast();
                 }

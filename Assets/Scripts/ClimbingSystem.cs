@@ -39,7 +39,7 @@ public class ClimbingSystem : MonoBehaviour {
         if (other.gameObject.tag =="Player")
         {
             
-            if (!P_c.isInAir && !stairLayerCollision)
+            if (!P_c.IsGrounded && !stairLayerCollision)
             {
                 GlobalVariables.HorizontalMovement = true;
 
