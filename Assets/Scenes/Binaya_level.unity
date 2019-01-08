@@ -366,6 +366,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11410764, guid: 867af685ebadbc74db55ea94f3808da5, type: 3}
+      propertyPath: groundlayer.m_Bits
+      value: 768
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 867af685ebadbc74db55ea94f3808da5, type: 3}
 --- !u!1 &104865620
@@ -1426,11 +1430,12 @@ MonoBehaviour:
     m_Bits: 256
   maxJumpCount: 2
   jumpPower: 700
-  isInAir: 0
+  IsGrounded: 0
   verticalMovementMultiplier: 1
   layerMaskToAvoidVelocity:
     serializedVersion: 2
     m_Bits: 0
+  DoubleJumpAbilityUnlocked: 0
 --- !u!136 &1801260913
 CapsuleCollider:
   m_ObjectHideFlags: 0
